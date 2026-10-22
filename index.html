@@ -138,7 +138,19 @@
   .stats-strip{background:var(--dark-0);padding:52px 0;}
   .stats-strip-inner{display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;}
   .stats-row{display:flex;gap:48px;flex-wrap:wrap;}
-  .stat-num{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(30px,4vw,44px);color:var(--brass-on-dark);line-height:1;margin-bottom:8px;}
+  /* Compteurs façon odomètre : chaque chiffre est une roue qui défile 0→9
+     jusqu'à se caler sur la valeur finale, séparateurs/suffixe en texte fixe. */
+  .stat-num{
+    display:inline-flex;align-items:center;line-height:1;margin-bottom:8px;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-variant-numeric:tabular-nums;
+    font-size:clamp(24px,3vw,34px);color:var(--brass-on-dark);
+    background:rgba(0,0,0,0.32);border:1px solid rgba(255,203,92,0.22);border-radius:6px;
+    padding:9px 11px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.05);
+  }
+  .odo-digit{display:inline-block;width:0.64em;height:1em;overflow:hidden;position:relative;}
+  .odo-strip{display:flex;flex-direction:column;transition:transform 1s cubic-bezier(.17,.67,.1,1);}
+  .odo-row{height:1em;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .odo-char{display:inline-block;padding:0 1px;}
   .stat-label{font-size:13.5px;color:var(--on-dark-dim);line-height:1.4;max-width:22ch;}
   .stats-cta{color:var(--on-dark);border-color:rgba(247,243,228,0.4);flex-shrink:0;}
   .stats-cta:hover{border-color:var(--brass-on-dark);color:var(--brass-on-dark);box-shadow:0 0 0 1px var(--brass-on-dark) inset;}
@@ -168,6 +180,32 @@
   .mandataire-list li::before{content:"—";color:var(--brass);flex-shrink:0;}
   @media (max-width:820px){ .mandataire-grid{grid-template-columns:1fr;gap:28px;} }
 
+  /* ---------- Carte interactive du réseau européen ---------- */
+  .euromap-wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:36px;align-items:start;margin-top:8px;}
+  .euromap{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:16px;}
+  .euromap svg{width:100%;height:auto;display:block;}
+  .euromap-shape{fill:var(--bg-0);stroke:var(--line);stroke-width:1.5;transition:fill .2s ease, stroke .2s ease;}
+  .euromap-hub{fill:rgba(140,93,24,0.08);stroke:var(--brass);stroke-dasharray:4 3;}
+  .euromap-country{cursor:pointer;}
+  .euromap-country:hover{fill:rgba(140,93,24,0.2);stroke:var(--brass-bright);}
+  .euromap-country:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
+  .euromap-country.is-active{fill:var(--brass);stroke:var(--brass-bright);}
+  .euromap-lux-hit{cursor:pointer;}
+  .euromap-lux-hit:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
+  .euromap-pin circle{fill:var(--brass);stroke:var(--bg-2);stroke-width:1.5;}
+  .euromap-pin text{font-family:'JetBrains Mono',monospace;font-size:11px;fill:var(--ivory-dim);}
+  .euromap-panel{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:26px 24px;min-height:300px;}
+  .euromap-panel h3{font-size:19px;margin:6px 0 10px;}
+  .euromap-panel-empty p{color:var(--ivory-dim);font-size:14.5px;}
+  .euromap-note{color:var(--ivory-dim);font-size:14.5px;margin:0 0 14px;}
+  .euromap-lang{font-size:13.5px;color:var(--ivory-dim);margin:0 0 18px;}
+  .euromap-lang strong{color:var(--ivory);}
+  .euromap-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:euro-step;}
+  .euromap-steps li{counter-increment:euro-step;position:relative;padding-left:26px;font-size:13.5px;color:var(--ivory-dim);}
+  .euromap-steps li strong{display:block;color:var(--ivory);font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;margin-bottom:2px;}
+  .euromap-steps li::before{content:counter(euro-step);position:absolute;left:0;top:1px;width:17px;height:17px;border-radius:50%;background:var(--bg-0);border:1px solid var(--brass);color:var(--brass-bright);font-family:'JetBrains Mono',monospace;font-size:10px;display:flex;align-items:center;justify-content:center;}
+  @media (max-width:820px){ .euromap-wrap{grid-template-columns:1fr;} }
+
   /* ---------- Cartes process (statiques, sans 3D/tilt) ---------- */
   .process-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
   .process-card{padding:26px 24px;border-radius:var(--radius-md);background:var(--bg-2);border:1px solid var(--line-soft);}
@@ -189,6 +227,10 @@
   .caf-grid figure{margin:0;position:relative;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--line-soft);}
   .caf-grid img{width:100%;height:100%;object-fit:cover;display:block;}
   .caf-grid figcaption{position:absolute;left:0;right:0;bottom:0;padding:16px;background:linear-gradient(to top, rgba(18,32,26,0.85), transparent);color:var(--on-dark);font-size:13.5px;}
+  /* Halo lumineux qui suit le curseur, effet "showroom" (desktop uniquement :
+     pas de survol persistant au doigt, donc rien à dégrader sur mobile). */
+  .caf-spotlight{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s ease;background:radial-gradient(circle 210px at var(--sx,50%) var(--sy,50%), rgba(255,255,255,0.4), rgba(255,255,255,0) 72%);}
+  .caf-grid figure:hover .caf-spotlight{opacity:1;}
   .caf-photo-main{grid-row:1 / 3;aspect-ratio:4/5;}
   .caf-photo-a{aspect-ratio:16/10;}
   .caf-photo-b{aspect-ratio:16/10;}
@@ -388,10 +430,43 @@
         </div>
         <ul class="mandataire-list">
           <li><strong>Nous travaillons pour vous</strong>Aucune commission liée au prix du véhicule : notre intérêt est d'obtenir le meilleur véhicule au meilleur prix, pas de vider un stock.</li>
-          <li><strong>Tout le marché européen, pas un seul parc</strong>Allemagne, Benelux, Italie, Europe du Nord — l'offre disponible est bien plus large qu'en France seule.</li>
+          <li><strong>Tout le marché européen, pas un seul parc</strong>Allemagne, Belgique, Luxembourg, Italie, Suède — l'offre disponible est bien plus large qu'en France seule.</li>
           <li><strong>Vérifié avant d'être proposé</strong>Contrôle technique, historique d'entretien et essai sur place avant toute proposition ferme.</li>
           <li><strong>Accompagnement jusqu'à la remise des clés</strong>Import, mise en conformité administrative (carte grise, TVA, malus) et livraison près de chez vous.</li>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RÉSEAU EUROPÉEN (carte interactive) -->
+  <section class="section-pad is-tint" id="reseau">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-mono">Notre réseau</div>
+        <h2>Où nous allons chercher votre voiture</h2>
+        <p>Une équipe qui parle français, anglais, italien et allemand. Cliquez sur un pays pour voir comment on y travaille.</p>
+      </div>
+      <div class="euromap-wrap">
+        <div class="euromap">
+          <svg viewBox="0 0 600 500" role="group" aria-label="Carte schématique de l'Europe avec les pays partenaires">
+            <path class="euromap-shape euromap-country" data-country="se" tabindex="0" role="button" aria-label="Suède" d="M400,20 L430,10 L460,35 L470,80 L455,125 L420,140 L395,110 L390,60 Z"></path>
+            <path class="euromap-shape euromap-country" data-country="de" tabindex="0" role="button" aria-label="Allemagne" d="M300,115 L355,95 L415,110 L440,150 L430,200 L400,235 L350,240 L315,210 L300,175 L302,145 Z"></path>
+            <path class="euromap-shape euromap-country" data-country="be" tabindex="0" role="button" aria-label="Belgique" d="M205,170 L245,155 L275,170 L280,200 L255,215 L215,210 L195,190 Z"></path>
+            <circle class="euromap-lux-hit" data-country="lu" tabindex="0" role="button" aria-label="Luxembourg" cx="288" cy="200" r="22" fill="transparent"></circle>
+            <circle class="euromap-shape euromap-country euromap-lux" data-country="lu" aria-hidden="true" cx="288" cy="200" r="9"></circle>
+            <path class="euromap-shape euromap-hub" aria-hidden="true" d="M150,225 L210,205 L265,220 L290,255 L300,310 L285,375 L255,415 L205,425 L160,400 L135,340 L135,275 Z"></path>
+            <path class="euromap-shape euromap-country" data-country="it" tabindex="0" role="button" aria-label="Italie" d="M320,300 L355,290 L380,310 L370,350 L390,380 L380,420 L360,450 L340,480 L325,460 L335,420 L320,390 L330,350 Z"></path>
+            <g class="euromap-pin euromap-pin-hub" aria-hidden="true"><circle cx="270" cy="395" r="5"></circle><text x="278" y="399">Côte d'Azur — notre base</text></g>
+          </svg>
+        </div>
+        <div class="euromap-panel" id="euromapPanel">
+          <div class="euromap-panel-empty" id="euromapEmpty">
+            <div class="eyebrow-mono">Carte simplifiée</div>
+            <h3>5 pays, un seul interlocuteur</h3>
+            <p>Cliquez sur un pays du réseau — Belgique, Allemagne, Luxembourg, Italie ou Suède — pour découvrir comment on y mène une recherche, de l'inspection à la livraison.</p>
+          </div>
+          <div class="euromap-panel-detail" id="euromapDetail" hidden></div>
+        </div>
       </div>
     </div>
   </section>
@@ -788,6 +863,68 @@
 
   });
 
+  // Halo lumineux qui suit le curseur sur les photos Cars and Friends
+  document.querySelectorAll('.caf-grid figure').forEach(function(fig){
+    var spot = document.createElement('div');
+    spot.className = 'caf-spotlight';
+    fig.appendChild(spot);
+    fig.addEventListener('mousemove', function(e){
+      var r = fig.getBoundingClientRect();
+      fig.style.setProperty('--sx', ((e.clientX - r.left) / r.width * 100) + '%');
+      fig.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
+
+  // Carte interactive du réseau européen
+  (function(){
+    var countries = document.querySelectorAll('.euromap-country');
+    var emptyEl = document.getElementById('euromapEmpty');
+    var detailEl = document.getElementById('euromapDetail');
+    if(!countries.length || !emptyEl || !detailEl) return;
+
+    var DATA = {
+      be: { name: 'Belgique', lang: 'Français', note: 'Marché dynamique, nombreuses reprises et flottes récentes.' },
+      de: { name: 'Allemagne', lang: 'Allemand', note: "Leader du marché premium d'occasion, carnets d'entretien et contrôles rigoureux." },
+      lu: { name: 'Luxembourg', lang: 'Français et allemand', note: 'Marché haut de gamme, kilométrages souvent très faibles.' },
+      it: { name: 'Italie', lang: 'Italien', note: 'Berceau de la sportive, modèles historiques et récents.' },
+      se: { name: 'Suède', lang: 'Anglais', note: 'Véhicules premium nordiques, entretien méticuleux.' }
+    };
+    var STEPS = [
+      { t: 'Inspection du véhicule', d: "Contrôle technique, historique d'entretien et essai sur place, sur le marché local." },
+      { t: 'Administratif', d: 'Vérification du dossier et levée de gage si nécessaire.' },
+      { t: "Préparation de l'export", d: 'Quitus fiscal, certificat de non-gage et démarches de sortie du territoire.' },
+      { t: 'Logistique', d: "Transport sécurisé jusqu'en France et livraison près de chez vous." }
+    ];
+
+    function selectCountry(code){
+      var data = DATA[code];
+      if(!data) return;
+      countries.forEach(function(el){ el.classList.toggle('is-active', el.getAttribute('data-country') === code); });
+      emptyEl.hidden = true;
+      detailEl.hidden = false;
+      var stepsHtml = STEPS.map(function(s){
+        return '<li><strong>' + s.t + '</strong>' + s.d + '</li>';
+      }).join('');
+      detailEl.innerHTML =
+        '<div class="eyebrow-mono">Démarches sur place</div>' +
+        '<h3>' + data.name + '</h3>' +
+        '<p class="euromap-note">' + data.note + '</p>' +
+        '<p class="euromap-lang"><strong>Interlocuteur :</strong> ' + data.lang + '</p>' +
+        '<ul class="euromap-steps">' + stepsHtml + '</ul>';
+    }
+
+    var clickable = document.querySelectorAll('.euromap-country, .euromap-lux-hit');
+    clickable.forEach(function(el){
+      el.addEventListener('click', function(){ selectCountry(el.getAttribute('data-country')); });
+      el.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          selectCountry(el.getAttribute('data-country'));
+        }
+      });
+    });
+  })();
+
   // Carrousel des photos d'enchères
   var proofCarousel = document.getElementById('proofCarousel');
   if(proofCarousel){
@@ -819,38 +956,65 @@
     proofCarousel.addEventListener('mouseleave', function(){ proofTimer = setInterval(function(){ goToProofSlide(proofIndex + 1); }, 5500); });
   }
 
-  // Compteurs animés (chiffres clés)
+  // Compteurs façon odomètre (chiffres clés) : chaque chiffre défile sur sa
+  // propre roue jusqu'à la valeur finale ; séparateurs et suffixe restent du
+  // texte fixe entre les roues.
   var reduceMotionStats = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function animateStatCounter(el){
+  function buildOdometer(el){
     var target = parseInt(el.getAttribute('data-count'), 10) || 0;
     var suffix = el.getAttribute('data-suffix') || '';
-    if(reduceMotionStats){
-      el.textContent = target.toLocaleString('fr-FR') + suffix;
-      return;
-    }
-    var duration = 1400, start = null;
-    function step(ts){
-      if(start === null) start = ts;
-      var p = Math.min(1, (ts - start) / duration);
-      var eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.round(target * eased).toLocaleString('fr-FR') + suffix;
-      if(p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+    var formatted = target.toLocaleString('fr-FR') + suffix;
+    el.textContent = '';
+    var digitIndex = 0;
+    formatted.split('').forEach(function(ch){
+      if(ch >= '0' && ch <= '9'){
+        var d = parseInt(ch, 10);
+        var wheel = document.createElement('span');
+        wheel.className = 'odo-digit';
+        var strip = document.createElement('span');
+        strip.className = 'odo-strip';
+        for(var n = 0; n <= 9; n++){
+          var row = document.createElement('span');
+          row.className = 'odo-row';
+          row.textContent = String(n);
+          strip.appendChild(row);
+        }
+        wheel.appendChild(strip);
+        el.appendChild(wheel);
+        if(reduceMotionStats){
+          strip.style.transform = 'translateY(-' + d + 'em)';
+        } else {
+          strip.style.transitionDelay = (digitIndex * 70) + 'ms';
+          (function(strip, d){
+            requestAnimationFrame(function(){
+              requestAnimationFrame(function(){
+                strip.style.transform = 'translateY(-' + d + 'em)';
+              });
+            });
+          })(strip, d);
+        }
+        digitIndex++;
+      } else {
+        var span = document.createElement('span');
+        span.className = 'odo-char';
+        span.textContent = ch === ' ' ? ' ' : ch;
+        el.appendChild(span);
+      }
+    });
   }
   var statNums = document.querySelectorAll('.stat-num[data-count]');
   if(statNums.length && 'IntersectionObserver' in window){
     var statObserver = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         if(entry.isIntersecting){
-          animateStatCounter(entry.target);
+          buildOdometer(entry.target);
           statObserver.unobserve(entry.target);
         }
       });
     }, { threshold: 0.5 });
     statNums.forEach(function(el){ statObserver.observe(el); });
   } else {
-    statNums.forEach(function(el){ animateStatCounter(el); });
+    statNums.forEach(function(el){ buildOdometer(el); });
   }
 })();
 </script>
