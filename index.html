@@ -180,20 +180,32 @@
   .mandataire-list li::before{content:"—";color:var(--brass);flex-shrink:0;}
   @media (max-width:820px){ .mandataire-grid{grid-template-columns:1fr;gap:28px;} }
 
-  /* ---------- Carte interactive du réseau européen ---------- */
+  /* ---------- Réseau européen : sélecteur de pays + visuel de trajet ---------- */
   .euromap-wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:36px;align-items:start;margin-top:8px;}
-  .euromap{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:16px;}
-  .euromap svg{width:100%;height:auto;display:block;}
-  .euromap-shape{fill:var(--bg-0);stroke:var(--line);stroke-width:1.5;transition:fill .2s ease, stroke .2s ease;}
-  .euromap-hub{fill:rgba(140,93,24,0.08);stroke:var(--brass);stroke-dasharray:4 3;}
-  .euromap-country{cursor:pointer;}
-  .euromap-country:hover{fill:rgba(140,93,24,0.2);stroke:var(--brass-bright);}
-  .euromap-country:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
-  .euromap-country.is-active{fill:var(--brass);stroke:var(--brass-bright);}
-  .euromap-lux-hit{cursor:pointer;}
-  .euromap-lux-hit:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
-  .euromap-pin circle{fill:var(--brass);stroke:var(--bg-2);stroke-width:1.5;}
-  .euromap-pin text{font-family:'JetBrains Mono',monospace;font-size:11px;fill:var(--ivory-dim);}
+  .euro-select{display:flex;flex-direction:column;gap:22px;}
+  .euro-pills{display:flex;flex-wrap:wrap;gap:10px;}
+  .euro-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;background:var(--bg-2);border:1px solid var(--line-soft);font-family:'Oswald',sans-serif;font-size:14px;font-weight:500;color:var(--ivory-dim);cursor:pointer;transition:background .2s ease, border-color .2s ease, color .2s ease;}
+  .euro-pill:hover{border-color:var(--brass);color:var(--ivory);}
+  .euro-pill:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
+  .euro-pill.is-active{background:var(--brass);border-color:var(--brass-bright);color:#fff;}
+  .euro-flag{font-size:17px;line-height:1;}
+  .euro-route{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:28px 24px;display:flex;align-items:center;gap:16px;}
+  .euro-route-node{display:flex;flex-direction:column;gap:3px;min-width:0;}
+  .euro-route-node strong{font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;color:var(--ivory);white-space:nowrap;}
+  .euro-route-node span{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ivory-faint);white-space:nowrap;}
+  .euro-route-node-to{text-align:right;align-items:flex-end;}
+  .euro-route-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--line);margin-bottom:2px;transition:background .2s ease;}
+  .euro-route-dot-hub{background:var(--brass);}
+  .euro-route-dot.is-set{background:var(--brass);}
+  .euro-route-line{flex:1;min-width:40px;}
+  .euro-route-line svg{width:100%;height:24px;display:block;}
+  .euro-route-line line{stroke:var(--line);stroke-width:2;stroke-dasharray:5 6;}
+  .euro-route-car{fill:var(--brass);}
+  @media (max-width:540px){
+    .euro-route{flex-direction:column;align-items:flex-start;gap:16px;}
+    .euro-route-line{display:none;}
+    .euro-route-node-to{text-align:left;align-items:flex-start;}
+  }
   .euromap-panel{background:var(--bg-2);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:26px 24px;min-height:300px;}
   .euromap-panel h3{font-size:19px;margin:6px 0 10px;}
   .euromap-panel-empty p{color:var(--ivory-dim);font-size:14.5px;}
@@ -447,23 +459,38 @@
         <p>Une équipe qui parle français, anglais, italien et allemand. Cliquez sur un pays pour voir comment on y travaille.</p>
       </div>
       <div class="euromap-wrap">
-        <div class="euromap">
-          <svg viewBox="0 0 600 500" role="group" aria-label="Carte schématique de l'Europe avec les pays partenaires">
-            <path class="euromap-shape euromap-country" data-country="se" tabindex="0" role="button" aria-label="Suède" d="M400,20 L430,10 L460,35 L470,80 L455,125 L420,140 L395,110 L390,60 Z"></path>
-            <path class="euromap-shape euromap-country" data-country="de" tabindex="0" role="button" aria-label="Allemagne" d="M300,115 L355,95 L415,110 L440,150 L430,200 L400,235 L350,240 L315,210 L300,175 L302,145 Z"></path>
-            <path class="euromap-shape euromap-country" data-country="be" tabindex="0" role="button" aria-label="Belgique" d="M205,170 L245,155 L275,170 L280,200 L255,215 L215,210 L195,190 Z"></path>
-            <circle class="euromap-lux-hit" data-country="lu" tabindex="0" role="button" aria-label="Luxembourg" cx="288" cy="200" r="22" fill="transparent"></circle>
-            <circle class="euromap-shape euromap-country euromap-lux" data-country="lu" aria-hidden="true" cx="288" cy="200" r="9"></circle>
-            <path class="euromap-shape euromap-hub" aria-hidden="true" d="M150,225 L210,205 L265,220 L290,255 L300,310 L285,375 L255,415 L205,425 L160,400 L135,340 L135,275 Z"></path>
-            <path class="euromap-shape euromap-country" data-country="it" tabindex="0" role="button" aria-label="Italie" d="M320,300 L355,290 L380,310 L370,350 L390,380 L380,420 L360,450 L340,480 L325,460 L335,420 L320,390 L330,350 Z"></path>
-            <g class="euromap-pin euromap-pin-hub" aria-hidden="true"><circle cx="270" cy="395" r="5"></circle><text x="278" y="399">Côte d'Azur — notre base</text></g>
-          </svg>
+        <div class="euro-select">
+          <div class="euro-pills" id="euroPills">
+            <button type="button" class="euro-pill" data-country="be"><span class="euro-flag" aria-hidden="true">🇧🇪</span>Belgique</button>
+            <button type="button" class="euro-pill" data-country="de"><span class="euro-flag" aria-hidden="true">🇩🇪</span>Allemagne</button>
+            <button type="button" class="euro-pill" data-country="lu"><span class="euro-flag" aria-hidden="true">🇱🇺</span>Luxembourg</button>
+            <button type="button" class="euro-pill" data-country="it"><span class="euro-flag" aria-hidden="true">🇮🇹</span>Italie</button>
+            <button type="button" class="euro-pill" data-country="se"><span class="euro-flag" aria-hidden="true">🇸🇪</span>Suède</button>
+          </div>
+          <div class="euro-route">
+            <div class="euro-route-node">
+              <span class="euro-route-dot euro-route-dot-hub"></span>
+              <strong>Côte d'Azur</strong>
+              <span>Notre base</span>
+            </div>
+            <div class="euro-route-line" aria-hidden="true">
+              <svg viewBox="0 0 200 24" preserveAspectRatio="none">
+                <line x1="4" y1="12" x2="196" y2="12"></line>
+                <circle class="euro-route-car" cx="100" cy="12" r="5"></circle>
+              </svg>
+            </div>
+            <div class="euro-route-node euro-route-node-to" aria-live="polite">
+              <span class="euro-route-dot" id="euroToDot"></span>
+              <strong id="euroToName">Choisissez un pays</strong>
+              <span id="euroToLang">—</span>
+            </div>
+          </div>
         </div>
         <div class="euromap-panel" id="euromapPanel">
           <div class="euromap-panel-empty" id="euromapEmpty">
-            <div class="eyebrow-mono">Carte simplifiée</div>
+            <div class="eyebrow-mono">Notre réseau</div>
             <h3>5 pays, un seul interlocuteur</h3>
-            <p>Cliquez sur un pays du réseau — Belgique, Allemagne, Luxembourg, Italie ou Suède — pour découvrir comment on y mène une recherche, de l'inspection à la livraison.</p>
+            <p>Cliquez sur un pays — Belgique, Allemagne, Luxembourg, Italie ou Suède — pour découvrir comment on y mène une recherche, de l'inspection à la livraison.</p>
           </div>
           <div class="euromap-panel-detail" id="euromapDetail" hidden></div>
         </div>
@@ -875,12 +902,15 @@
     });
   });
 
-  // Carte interactive du réseau européen
+  // Réseau européen : sélecteur de pays + visuel de trajet
   (function(){
-    var countries = document.querySelectorAll('.euromap-country');
+    var pills = document.querySelectorAll('.euro-pill');
     var emptyEl = document.getElementById('euromapEmpty');
     var detailEl = document.getElementById('euromapDetail');
-    if(!countries.length || !emptyEl || !detailEl) return;
+    var toName = document.getElementById('euroToName');
+    var toLang = document.getElementById('euroToLang');
+    var toDot = document.getElementById('euroToDot');
+    if(!pills.length || !emptyEl || !detailEl) return;
 
     var DATA = {
       be: { name: 'Belgique', lang: 'Français', note: 'Marché dynamique, nombreuses reprises et flottes récentes.' },
@@ -899,7 +929,10 @@
     function selectCountry(code){
       var data = DATA[code];
       if(!data) return;
-      countries.forEach(function(el){ el.classList.toggle('is-active', el.getAttribute('data-country') === code); });
+      pills.forEach(function(el){ el.classList.toggle('is-active', el.getAttribute('data-country') === code); });
+      toName.textContent = data.name;
+      toLang.textContent = data.lang;
+      toDot.classList.add('is-set');
       emptyEl.hidden = true;
       detailEl.hidden = false;
       var stepsHtml = STEPS.map(function(s){
@@ -913,15 +946,8 @@
         '<ul class="euromap-steps">' + stepsHtml + '</ul>';
     }
 
-    var clickable = document.querySelectorAll('.euromap-country, .euromap-lux-hit');
-    clickable.forEach(function(el){
+    pills.forEach(function(el){
       el.addEventListener('click', function(){ selectCountry(el.getAttribute('data-country')); });
-      el.addEventListener('keydown', function(e){
-        if(e.key === 'Enter' || e.key === ' '){
-          e.preventDefault();
-          selectCountry(el.getAttribute('data-country'));
-        }
-      });
     });
   })();
 
