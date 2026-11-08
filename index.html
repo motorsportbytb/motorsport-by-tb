@@ -603,21 +603,21 @@
       <div class="team-wrap">
         <div class="team-photo" id="teamPhoto">
           <img src="images/formation/sortie-club-bateau.jpg" alt="Thomas Bona et l'équipe MOTORSPORT by TB lors d'une sortie en mer entre passionnés" id="teamImg">
-          <button type="button" class="team-pin" data-member="p1" style="left:21%;top:56%;" aria-label="Voir le premier membre de l'équipe"><span></span></button>
-          <button type="button" class="team-pin" data-member="p2" style="left:44%;top:55%;" aria-label="Voir le deuxième membre de l'équipe"><span></span></button>
-          <button type="button" class="team-pin" data-member="p3" style="left:68%;top:54%;" aria-label="Voir le troisième membre de l'équipe"><span></span></button>
+          <button type="button" class="team-pin" data-member="p1" style="left:21%;top:56%;" aria-label="Voir Clément"><span></span></button>
+          <button type="button" class="team-pin" data-member="p2" style="left:44%;top:55%;" aria-label="Voir Yanis"><span></span></button>
+          <button type="button" class="team-pin" data-member="p3" style="left:68%;top:54%;" aria-label="Voir Thomas"><span></span></button>
           <button type="button" class="team-reset" id="teamReset" hidden>← Revenir à la photo</button>
         </div>
         <div class="team-panel">
           <div class="team-pills" id="teamPills">
-            <button type="button" class="team-pill" data-member="p1">Membre 1</button>
-            <button type="button" class="team-pill" data-member="p2">Membre 2</button>
-            <button type="button" class="team-pill" data-member="p3">Membre 3</button>
+            <button type="button" class="team-pill" data-member="p1">Clément</button>
+            <button type="button" class="team-pill" data-member="p2">Yanis</button>
+            <button type="button" class="team-pill" data-member="p3">Thomas</button>
           </div>
           <div class="team-detail" id="teamDetail">
             <div class="eyebrow-mono">L'équipe</div>
-            <h3>Trois passionnés, une même exigence</h3>
-            <p>Cliquez sur une personne sur la photo, ou sur un nom ci-dessus, pour découvrir qui elle est.</p>
+            <h3>Clément, Yanis et Thomas</h3>
+            <p>Trois profils complémentaires, une même exigence. Cliquez sur une personne — sur la photo ou ci-dessus — pour en savoir plus.</p>
           </div>
         </div>
       </div>
@@ -1019,11 +1019,22 @@
     var resetBtn = document.getElementById('teamReset');
     if(!photo || !img || !detailTeam) return;
 
-    // À compléter avec les vraies descriptions transmises par le client.
     var TEAM = {
-      p1: { name: 'Membre 1', role: 'Rôle à préciser', bio: 'Description à venir.' },
-      p2: { name: 'Membre 2', role: 'Rôle à préciser', bio: 'Description à venir.' },
-      p3: { name: 'Membre 3', role: 'Rôle à préciser', bio: 'Description à venir.' }
+      p1: {
+        name: 'Clément',
+        role: 'Vente & process concession',
+        bio: "Dix ans passés dans les concessions les plus réputées de la région grenobloise, entre Rhône-Alpes et Côte d'Azur. Clément connaît le métier de la vente automobile comme personne — de la relation client jusqu'aux process qui font la différence chez les plus grandes enseignes. Il a rejoint MOTORSPORT by TB pour apporter cette exigence aux méthodes de l'équipe."
+      },
+      p2: {
+        name: 'Yanis',
+        role: 'YS Detailing — Nettoyage haut de gamme',
+        bio: "Derrière YS Detailing, Yanis est un perfectionniste du nettoyage automobile : rien n'échappe à son œil, surtout pas la poussière. Traitement cuir, remise à neuf intérieur comme extérieur — avec plusieurs camions déployés partout en France, il se déplace directement chez vous pour un detailing de précision. On dit même qu'après son passage, on pourrait lécher ses jantes."
+      },
+      p3: {
+        name: 'Thomas',
+        role: 'Fondateur',
+        bio: "Fondateur de MOTORSPORT by TB. Entrepreneur dans l'automobile depuis ses 19 ans, Thomas a construit son expérience dans le gardiennage et la conciergerie automobile haut de gamme, entre la Côte d'Azur et Monaco. Son ambition : proposer autre chose qu'un simple garage — une agence qui sait tout faire, de la recherche du véhicule jusqu'à son entretien au quotidien."
+      }
     };
 
     function selectMember(id){
